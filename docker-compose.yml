@@ -1,0 +1,23 @@
+# Local Postgres for the Ruvu SDR agent (Plane 06 data system).
+# pgvector image so the vector layer (Plane 05, Part 9) is ready without extra setup.
+# Variables interpolate from .env in this directory, with dev-safe defaults.
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: ruvu_sdr_postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-ruvu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ruvu}
+      POSTGRES_DB: ${POSTGRES_DB:-ruvu_sdr}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ruvu_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ruvu} -d ${POSTGRES_DB:-ruvu_sdr}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  ruvu_pgdata:
