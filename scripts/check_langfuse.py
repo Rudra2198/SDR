@@ -11,7 +11,13 @@ from __future__ import annotations
 
 import sys
 
-from ruvu_sdr.observability import configure_tracing, current_trace_url, flush, observe
+from ruvu_sdr.observability import (
+    configure_tracing,
+    current_trace_url,
+    flush,
+    get_client,
+    observe,
+)
 
 
 @observe(name="phase0-smoke-test")
@@ -25,6 +31,10 @@ def main() -> int:
     if not configure_tracing():
         print("Langfuse not configured: set LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY")
         print("in .env (see .env.example), then re-run.")
+        return 1
+
+    if not get_client().auth_check():
+        print("Langfuse auth check failed. Verify your keys and host in .env.")
         return 1
 
     url = _smoke("phase-0 foundations")
