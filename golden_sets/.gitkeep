@@ -1,0 +1,3 @@
+# Golden sets (file-backed case store, playbook Part 6).
+# One JSON file per eval: <eval_name>.json, a list of {input, expected, ...} cases.
+# Empty in Phase 0; fills in as evals are designed (email_quality, reply_intent, ...).
