@@ -1,0 +1,44 @@
+[
+  {
+    "id": "metric-contact-funnel",
+    "dimension": "unit",
+    "input": {"method": "metric", "args": {"name": "contact_funnel"}},
+    "expected": {"kind": "shape", "layer": "semantic", "keys": ["data", "layer", "query", "source", "tenant_id"]}
+  },
+  {
+    "id": "metric-reply-rate",
+    "dimension": "unit",
+    "input": {"method": "metric", "args": {"name": "reply_rate"}},
+    "expected": {"kind": "shape", "layer": "semantic", "keys": ["data", "layer", "query", "source", "tenant_id"]}
+  },
+  {
+    "id": "recall-first-touch",
+    "dimension": "unit",
+    "input": {"method": "recall", "args": {"task_type": "first_touch"}},
+    "expected": {"kind": "shape", "layer": "episodic", "keys": ["data", "layer", "query", "source", "tenant_id"]}
+  },
+  {
+    "id": "user-prefs",
+    "dimension": "unit",
+    "input": {"method": "user_prefs", "args": {}},
+    "expected": {"kind": "shape", "layer": "user", "keys": ["data", "layer", "query", "source", "tenant_id"]}
+  },
+  {
+    "id": "graph-path-stubbed",
+    "dimension": "unit",
+    "input": {"method": "graph_path", "args": {"a": "Ash", "b": "Acme"}},
+    "expected": {"kind": "raises", "error": "NotImplementedForTenant"}
+  },
+  {
+    "id": "search-stubbed",
+    "dimension": "unit",
+    "input": {"method": "search", "args": {"query": "warm intros", "k": 5}},
+    "expected": {"kind": "raises", "error": "NotImplementedForTenant"}
+  },
+  {
+    "id": "doc-stubbed",
+    "dimension": "unit",
+    "input": {"method": "doc", "args": {"uri": "s3://x"}},
+    "expected": {"kind": "raises", "error": "NotImplementedForTenant"}
+  }
+]

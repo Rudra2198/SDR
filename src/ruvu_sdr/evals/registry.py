@@ -59,3 +59,30 @@ def suite_specs(suite: str) -> list[EvalSpec]:
     if suite == "nightly":
         return list(REGISTRY.values())
     raise KeyError(f"unknown suite: {suite!r} (known: {', '.join(AVAILABLE_SUITES)})")
+
+
+# ─── Registered evals ─────────────────────────────────────────────────────────
+# Phase 1: the Context API contract (unit). The first eval with real cases, so the
+# PR gate stops passing vacuously. Imports live here (not at top) so registration
+# is a clear, ordered side effect of importing this module.
+def _register_phase_1() -> None:
+    from ruvu_sdr.context_api.contract import context_contract_target
+    from ruvu_sdr.evals.scorers import ContextContractScorer
+
+    register(
+        EvalSpec(
+            name="context_api_contract",
+            dimension=Dimension.UNIT,
+            gates_phase="phase-1",
+            scorer=ContextContractScorer(),
+            target=context_contract_target,
+            description=(
+                "Context API surface (Part 3): live methods return the "
+                "ContextResult envelope; stubbed layers raise NotImplementedForTenant."
+            ),
+        )
+    )
+    PR_SUITE.append("context_api_contract")
+
+
+_register_phase_1()

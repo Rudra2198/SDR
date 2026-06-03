@@ -22,8 +22,21 @@ __all__ = [
     "current_trace_url",
     "flush",
     "get_client",
+    "tag_observation",
     "tracing_enabled",
 ]
+
+
+def tag_observation(**metadata: object) -> None:
+    """Attach metadata to the observation currently in scope (e.g. tenant_id, layer).
+
+    Safe to call when tracing is disabled (it becomes a no-op), so traced code does
+    not need to branch on whether Langfuse is configured.
+    """
+    try:
+        langfuse_context.update_current_observation(metadata=metadata)
+    except Exception:
+        pass
 
 
 def tracing_enabled() -> bool:
