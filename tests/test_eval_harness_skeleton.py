@@ -13,13 +13,27 @@ from ruvu_sdr.evals.registry import EvalSpec, suite_specs
 from ruvu_sdr.evals.runner import EvalRunner
 
 
-def test_pr_suite_empty_and_passes() -> None:
-    # Customer 01 behavior: with nothing registered for PRs, the gate is green
-    # but the harness still executes.
-    assert suite_specs("pr") == []
-    results = EvalRunner().run_suite("pr")
-    assert results == []
-    assert all(r.passed for r in results)  # vacuously true
+def test_runner_passes_vacuously_with_no_cases() -> None:
+    # Customer 01 behavior: an eval with zero cases still executes and passes
+    # green. (Phase 0 proved this on the empty PR suite; Phase 1 registered the
+    # first real eval, so we show the invariant directly via an empty store.)
+    spec = EvalSpec(
+        name="selftest_empty",
+        dimension=Dimension.UNIT,
+        gates_phase="phase-0",
+        scorer=ExactMatchScorer(),
+        target=str.upper,
+    )
+    result = EvalRunner(case_store=InMemoryCaseStore({})).run_eval(spec)
+    assert result.num_cases == 0
+    assert result.passed is True  # vacuous pass
+    assert result.score == 1.0
+
+
+def test_pr_suite_carries_phase_1_eval() -> None:
+    # The gate now has teeth: the Context API contract eval runs on every PR.
+    names = [spec.name for spec in suite_specs("pr")]
+    assert "context_api_contract" in names
 
 
 def test_exact_match_scorer() -> None:

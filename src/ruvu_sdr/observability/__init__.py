@@ -6,6 +6,7 @@ from ruvu_sdr.observability.tracing import (
     flush,
     get_client,
     observe,
+    tag_observation,
     tracing_enabled,
 )
 
@@ -15,5 +16,6 @@ __all__ = [
     "flush",
     "get_client",
     "observe",
+    "tag_observation",
     "tracing_enabled",
 ]
