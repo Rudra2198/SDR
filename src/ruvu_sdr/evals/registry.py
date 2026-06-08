@@ -85,4 +85,29 @@ def _register_phase_1() -> None:
     PR_SUITE.append("context_api_contract")
 
 
+# Phase 1: the hubspot-mcp tool contract (unit). Encodes the locked tool surface
+# (read_contacts / read_company / log_activity) as a gate before the tools work —
+# eval-first (Part 5). Red until step 5 implements the tools.
+def _register_phase_1_hubspot() -> None:
+    from ruvu_sdr.evals.scorers import HubSpotContractScorer
+    from ruvu_sdr.mcp_servers.hubspot.contract import hubspot_contract_target
+
+    register(
+        EvalSpec(
+            name="hubspot_tool_contract",
+            dimension=Dimension.UNIT,
+            gates_phase="phase-1",
+            scorer=HubSpotContractScorer(),
+            target=hubspot_contract_target,
+            description=(
+                "hubspot-mcp tool surface (Part 8): read tools return shapes "
+                "normalized to the Part 10 schema, read_company 404 -> None, "
+                "errors surface HubSpotError."
+            ),
+        )
+    )
+    PR_SUITE.append("hubspot_tool_contract")
+
+
 _register_phase_1()
+_register_phase_1_hubspot()

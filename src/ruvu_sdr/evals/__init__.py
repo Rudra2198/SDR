@@ -6,7 +6,12 @@ Phase 0; the six dimensions populate as the build phases reach them.
 """
 
 from ruvu_sdr.evals.models import Case, CaseResult, Dimension, EvalResult, ScoreResult
-from ruvu_sdr.evals.scorers import ContextContractScorer, ExactMatchScorer, Scorer
+from ruvu_sdr.evals.scorers import (
+    ContextContractScorer,
+    ExactMatchScorer,
+    HubSpotContractScorer,
+    Scorer,
+)
 
 # NOTE: EvalRunner is intentionally *not* re-exported here. It lives in
 # ruvu_sdr.evals.runner, which is also the `python -m ruvu_sdr.evals.runner`
@@ -17,6 +22,7 @@ __all__ = [
     "Case",
     "CaseResult",
     "ContextContractScorer",
+    "HubSpotContractScorer",
     "Dimension",
     "EvalResult",
     "ScoreResult",

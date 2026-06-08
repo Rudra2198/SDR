@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     # ─── Anthropic (Plane 03 agents) — needed from Phase 2 ────────
     anthropic_api_key: str | None = None
 
+    # ─── Tool credentials (Plane 04 MCP servers) ─────────────────
+    hubspot_access_token: str | None = None
+
     @property
     def langfuse_configured(self) -> bool:
         """True when both Langfuse keys are present (tracing can be flushed)."""
