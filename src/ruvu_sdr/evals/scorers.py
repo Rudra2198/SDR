@@ -86,3 +86,48 @@ class ContextContractScorer(Scorer):
         if not keys_ok:
             problems.append(f"missing keys: {sorted(want_keys - got_keys)}")
         return ScoreResult(passed=False, score=0.0, detail="; ".join(problems))
+
+
+class HubSpotContractScorer(Scorer):
+    """Scores the hubspot-mcp tool contract eval (Phase 1, unit dimension).
+
+    Case kinds (see `mcp_servers.hubspot.contract`):
+    - ``shape``  — a tool must return a model carrying at least the expected keys.
+    - ``none``   — a tool must return ``None`` (e.g. ``read_company`` on a 404).
+    - ``raises`` — a tool must surface ``HubSpotError``.
+
+    A stubbed tool normalizes to ``unimplemented``, which matches no expected kind,
+    so the eval is red until the tools are implemented.
+    """
+
+    name = "hubspot_contract"
+
+    def score(self, *, expected: Any, output: Any) -> ScoreResult:
+        if output.get("kind") != expected.get("kind"):
+            return ScoreResult(
+                passed=False,
+                score=0.0,
+                detail=f"kind: expected {expected.get('kind')!r}, got {output.get('kind')!r}",
+            )
+
+        kind = expected["kind"]
+        if kind == "none":
+            return ScoreResult(passed=True, score=1.0)
+
+        if kind == "raises":
+            ok = output.get("error") == expected.get("error")
+            detail = (
+                ""
+                if ok
+                else f"error: expected {expected.get('error')!r}, got {output.get('error')!r}"
+            )
+            return ScoreResult(passed=ok, score=1.0 if ok else 0.0, detail=detail)
+
+        # kind == "shape"
+        want_keys = set(expected.get("keys", []))
+        got_keys = set(output.get("keys", []))
+        if want_keys.issubset(got_keys):
+            return ScoreResult(passed=True, score=1.0)
+        return ScoreResult(
+            passed=False, score=0.0, detail=f"missing keys: {sorted(want_keys - got_keys)}"
+        )

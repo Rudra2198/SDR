@@ -1,0 +1,32 @@
+[
+  {
+    "id": "read-contacts-shape",
+    "dimension": "unit",
+    "input": {"tool": "read_contacts", "scenario": "ok", "args": {"limit": 2}},
+    "expected": {"kind": "shape", "keys": ["contacts", "next_after"]}
+  },
+  {
+    "id": "read-company-shape",
+    "dimension": "unit",
+    "input": {"tool": "read_company", "scenario": "ok", "args": {"company_id": "789"}},
+    "expected": {"kind": "shape", "keys": ["domain", "hubspot_id", "industry", "name"]}
+  },
+  {
+    "id": "read-company-not-found-returns-none",
+    "dimension": "unit",
+    "input": {"tool": "read_company", "scenario": "not_found", "args": {"company_id": "000"}},
+    "expected": {"kind": "none"}
+  },
+  {
+    "id": "log-activity-shape",
+    "dimension": "unit",
+    "input": {"tool": "log_activity", "scenario": "ok", "args": {"contact_id": "101", "body": "Logged first touch.", "idempotency_key": "contact-101-touch-1"}},
+    "expected": {"kind": "shape", "keys": ["created", "engagement_id", "idempotent_hit"]}
+  },
+  {
+    "id": "read-contacts-auth-error-raises",
+    "dimension": "unit",
+    "input": {"tool": "read_contacts", "scenario": "auth_error", "args": {}},
+    "expected": {"kind": "raises", "error": "HubSpotError"}
+  }
+]
